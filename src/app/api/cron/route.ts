@@ -5,8 +5,10 @@ import { eq, and, lte } from "drizzle-orm";
 import { sendChatMessage } from "@/lib/flow-api";
 
 export async function GET(request: NextRequest) {
+  // Vercel Cron (헤더) 또는 외부 cron (쿼리 파라미터) 인증
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const secretParam = request.nextUrl.searchParams.get("secret");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && secretParam !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
