@@ -6,14 +6,12 @@ const STATUS_LABELS: Record<string, string> = {
   pending: "대기",
   sent: "전송됨",
   failed: "실패",
-  cancelled: "취소됨",
 };
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   sent: "bg-green-100 text-green-800",
   failed: "bg-red-100 text-red-800",
-  cancelled: "bg-gray-100 text-gray-800",
 };
 
 interface Props {

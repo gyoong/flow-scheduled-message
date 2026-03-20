@@ -23,12 +23,6 @@ export default function MessageForm() {
     e.preventDefault();
     setError("");
 
-    const authorEmail = localStorage.getItem("flow_email");
-    if (!authorEmail) {
-      setError("먼저 메인 페이지에서 이메일을 설정해주세요");
-      return;
-    }
-
     const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}:00`);
     if (scheduledAt <= new Date()) {
       setError("예약 시간은 현재 시간 이후여야 합니다");
@@ -41,7 +35,6 @@ export default function MessageForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          authorEmail,
           targetId,
           content,
           scheduledAt: scheduledAt.toISOString(),

@@ -22,19 +22,17 @@ export async function DELETE(
     return NextResponse.json({ error: "대기 중인 메시지만 취소할 수 있습니다" }, { status: 400 });
   }
 
-  // QStash 취소와 DB 업데이트를 병렬 실행
+  // QStash 취소와 DB 삭제를 병렬 실행
   const qstashDelete = existing.qstashMessageId
     ? qstashClient.messages.delete(existing.qstashMessageId).catch(() => {})
     : Promise.resolve();
 
-  const [, [cancelled]] = await Promise.all([
+  await Promise.all([
     qstashDelete,
     db
-      .update(scheduledMessages)
-      .set({ status: "cancelled", updatedAt: new Date() })
-      .where(eq(scheduledMessages.id, Number(id)))
-      .returning(),
+      .delete(scheduledMessages)
+      .where(eq(scheduledMessages.id, Number(id))),
   ]);
 
-  return NextResponse.json(cancelled);
+  return NextResponse.json({ ok: true });
 }

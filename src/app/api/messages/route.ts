@@ -1,29 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { scheduledMessages } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, or, lt, inArray } from "drizzle-orm";
 import { qstashClient, getAppBaseUrl } from "@/lib/qstash";
+import { getSession } from "@/lib/auth";
 
-export async function GET(request: NextRequest) {
-  const email = request.nextUrl.searchParams.get("email");
-  if (!email) {
-    return NextResponse.json({ error: "email 파라미터가 필요합니다" }, { status: 400 });
+export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "로그인이 필요합니다" }, { status: 401 });
   }
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  // 7일 지난 sent/failed 메시지 삭제
+  await db
+    .delete(scheduledMessages)
+    .where(
+      and(
+        inArray(scheduledMessages.status, ["sent", "failed"]),
+        lt(scheduledMessages.updatedAt, sevenDaysAgo)
+      )
+    );
 
   const messages = await db
     .select()
     .from(scheduledMessages)
-    .where(eq(scheduledMessages.authorEmail, email))
+    .where(eq(scheduledMessages.authorEmail, session.email))
     .orderBy(desc(scheduledMessages.scheduledAt));
 
   return NextResponse.json(messages);
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { authorEmail, targetId, targetName, content, scheduledAt } = body;
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "로그인이 필요합니다" }, { status: 401 });
+  }
 
-  if (!authorEmail || !targetId || !content || !scheduledAt) {
+  const body = await request.json();
+  const { targetId, targetName, content, scheduledAt } = body;
+  const authorEmail = session.email;
+
+  if (!targetId || !content || !scheduledAt) {
     return NextResponse.json(
       { error: "필수 필드가 누락되었습니다" },
       { status: 400 }
@@ -62,8 +81,10 @@ export async function POST(request: NextRequest) {
     await db
       .delete(scheduledMessages)
       .where(eq(scheduledMessages.id, message.id));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("QStash publish error:", errorMessage);
     return NextResponse.json(
-      { error: "메시지 예약에 실패했습니다" },
+      { error: "메시지 예약에 실패했습니다", detail: errorMessage },
       { status: 502 }
     );
   }
