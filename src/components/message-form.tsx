@@ -72,18 +72,18 @@ export default function MessageForm() {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          채팅방 연동코드 (Room ID)
+          채팅방 번호
         </label>
         <input
           type="text"
           value={targetId}
           onChange={(e) => setTargetId(e.target.value)}
-          placeholder="채팅방 연동코드 입력"
+          placeholder="채팅방 번호 입력"
           className="w-full border rounded-lg px-3 py-2 text-sm"
           required
         />
         <p className="mt-1 text-xs text-gray-400">
-          채팅방 더보기 &gt; 채팅방 설정 &gt; 연동 코드 복사
+          채팅방 더보기 &gt; 채팅방 설정 &gt; 채팅방 번호 복사
         </p>
       </div>
 
