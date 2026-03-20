@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const data = await getChatRoom(roomId);
-    return NextResponse.json({ title: data.title });
+    return NextResponse.json({ title: data.projects.title || "(이름 없는 채팅방)" });
   } catch {
     return NextResponse.json({ error: "채팅방을 찾을 수 없습니다" }, { status: 404 });
   }
