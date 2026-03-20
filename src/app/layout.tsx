@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Jua } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,9 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const jua = Jua({
+  variable: "--font-jua",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Flow 예약 메시지",
-  description: "Flow 메신저 예약 메시지 서비스",
+  title: "Flow 메시지 예약",
+  description: "Flow 메신저 메시지 예약 서비스",
 };
 
 export default function RootLayout({
@@ -25,9 +31,14 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${jua.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        {children}
+        <footer className="mt-auto py-4 text-center text-xs text-gray-400">
+          Built by Chankyung Kim
+        </footer>
+      </body>
     </html>
   );
 }

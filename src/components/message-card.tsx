@@ -10,7 +10,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
-  sent: "bg-green-100 text-green-800",
+  sent: "bg-purple-100 text-purple-800",
   failed: "bg-red-100 text-red-800",
 };
 
@@ -23,9 +23,9 @@ export default function MessageCard({ message, onCancel }: Props) {
   const scheduledDate = new Date(message.scheduledAt);
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm">
+    <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-semibold">
+        <span className="text-sm font-normal">
           {message.targetName || message.targetId}
         </span>
         <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[message.status] || ""}`}>

@@ -14,6 +14,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (!email.endsWith("@kolon.com")) {
+    return NextResponse.json(
+      { error: "@kolon.com 이메일만 가입할 수 있습니다" },
+      { status: 400 }
+    );
+  }
+
   if (!/^\d{6}$/.test(password)) {
     return NextResponse.json(
       { error: "비밀번호는 숫자 6자리여야 합니다" },
