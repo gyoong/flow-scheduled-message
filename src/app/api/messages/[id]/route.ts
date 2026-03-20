@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { scheduledMessages } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { qstashClient } from "@/lib/qstash";
 
 export async function DELETE(
   request: NextRequest,
@@ -21,11 +22,19 @@ export async function DELETE(
     return NextResponse.json({ error: "대기 중인 메시지만 취소할 수 있습니다" }, { status: 400 });
   }
 
-  const [cancelled] = await db
-    .update(scheduledMessages)
-    .set({ status: "cancelled", updatedAt: new Date() })
-    .where(eq(scheduledMessages.id, Number(id)))
-    .returning();
+  // QStash 취소와 DB 업데이트를 병렬 실행
+  const qstashDelete = existing.qstashMessageId
+    ? qstashClient.messages.delete(existing.qstashMessageId).catch(() => {})
+    : Promise.resolve();
+
+  const [, [cancelled]] = await Promise.all([
+    qstashDelete,
+    db
+      .update(scheduledMessages)
+      .set({ status: "cancelled", updatedAt: new Date() })
+      .where(eq(scheduledMessages.id, Number(id)))
+      .returning(),
+  ]);
 
   return NextResponse.json(cancelled);
 }

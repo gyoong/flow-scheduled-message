@@ -8,6 +8,7 @@ export const scheduledMessages = pgTable("scheduled_messages", {
   content: text("content").notNull(),
   scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull(),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
+  qstashMessageId: varchar("qstash_message_id", { length: 255 }),
   errorMessage: text("error_message"),
   sentAt: timestamp("sent_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),

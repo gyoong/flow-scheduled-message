@@ -39,6 +39,9 @@ yarn-error.log*
 # local db
 local.db
 
+# research
+_*.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
