@@ -20,6 +20,11 @@ async function flowFetch(path: string, options: RequestInit = {}) {
   return parsed.response.data;
 }
 
+// 채팅방 상세정보 조회
+export async function getChatRoom(roomId: string) {
+  return flowFetch(`/v1/chats/${roomId}`);
+}
+
 // 채팅방에 메시지 전송
 export async function sendChatMessage(
   roomId: string,

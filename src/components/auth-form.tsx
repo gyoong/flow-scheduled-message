@@ -44,7 +44,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="w-full space-y-4">
       {error && (
         <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
           {error}
@@ -59,8 +59,8 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="name@company.com"
-          className="w-full border rounded-lg px-3 py-2 text-sm"
+          placeholder="name@kolon.com"
+          className="w-full border rounded-lg px-4 py-3 text-base"
           required
         />
       </div>
@@ -79,7 +79,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           placeholder="000000"
           inputMode="numeric"
           maxLength={6}
-          className="w-full border rounded-lg px-3 py-2 text-sm tracking-widest"
+          className="w-full border rounded-lg px-4 py-3 text-base tracking-widest"
           required
         />
       </div>
@@ -87,7 +87,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+        className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-hover disabled:opacity-50 cursor-pointer"
       >
         {submitting
           ? "처리 중..."
@@ -103,7 +103,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
             <button
               type="button"
               onClick={() => { setMode("register"); setError(""); }}
-              className="text-blue-600 hover:underline cursor-pointer"
+              className="text-primary hover:underline cursor-pointer"
             >
               회원가입
             </button>
@@ -114,7 +114,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
             <button
               type="button"
               onClick={() => { setMode("login"); setError(""); }}
-              className="text-blue-600 hover:underline cursor-pointer"
+              className="text-primary hover:underline cursor-pointer"
             >
               로그인
             </button>

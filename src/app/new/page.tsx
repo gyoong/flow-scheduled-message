@@ -3,15 +3,15 @@ import MessageForm from "@/components/message-form";
 
 export default function NewMessagePage() {
   return (
-    <main className="max-w-lg mx-auto px-4 py-8">
+    <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/"
-          className="text-gray-400 hover:text-gray-600 text-lg"
+          className="text-2xl font-title text-primary hover:opacity-70"
         >
-          &larr;
+          &lt;
         </Link>
-        <h1 className="text-xl font-bold">예약 메시지 등록</h1>
+        <h1 className="text-2xl font-title text-primary">메시지 예약 등록</h1>
       </div>
       <div className="bg-white rounded-xl shadow-sm p-6">
         <MessageForm />

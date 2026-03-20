@@ -27,10 +27,10 @@ export default function MessageList() {
         setEmail(data.email);
       } else {
         setEmail(null);
+        setLoading(false);
       }
     } catch {
       setEmail(null);
-    } finally {
       setLoading(false);
     }
   }, []);
@@ -65,8 +65,8 @@ export default function MessageList() {
 
   const handleCancel = async (id: number) => {
     if (!confirm("예약을 취소하시겠습니까?")) return;
-    await fetch(`/api/messages/${id}`, { method: "DELETE" });
-    fetchMessages();
+    const res = await fetch(`/api/messages/${id}`, { method: "DELETE" });
+    if (res.ok) fetchMessages();
   };
 
   const filtered = activeTab === "all"
@@ -78,27 +78,34 @@ export default function MessageList() {
   }
 
   if (!email) {
-    return <AuthForm onSuccess={checkSession} />;
+    return (
+      <>
+        <h1 className="text-2xl font-title text-primary mb-6">Flow 메시지 예약</h1>
+        <AuthForm onSuccess={checkSession} />
+      </>
+    );
   }
 
   return (
     <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-title text-primary">Flow 메시지 예약</h1>
+        <Link
+          href="/new"
+          className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-hover"
+        >
+          + 새 예약
+        </Link>
+      </div>
+
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-600">{email}</span>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/new"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
-          >
-            + 새 예약
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-400 hover:text-gray-600 cursor-pointer"
-          >
-            로그아웃
-          </button>
-        </div>
+        <span className="text-sm text-gray-600 break-all">{email}</span>
+        <button
+          onClick={handleLogout}
+          className="text-sm text-gray-400 hover:text-gray-600 cursor-pointer"
+        >
+          로그아웃
+        </button>
       </div>
 
       <div className="flex gap-1 mb-4 border-b">
@@ -108,7 +115,7 @@ export default function MessageList() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-3 py-2 text-sm font-medium cursor-pointer ${
               activeTab === tab.key
-                ? "border-b-2 border-blue-600 text-blue-600"
+                ? "border-b-2 border-primary text-primary"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >

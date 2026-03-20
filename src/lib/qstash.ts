@@ -2,7 +2,7 @@ import { Client } from "@upstash/qstash";
 
 export const qstashClient = new Client({
   token: process.env.QSTASH_TOKEN!,
-  baseUrl: process.env.QSTASH_URL || "https://qstash.upstash.io",
+  baseUrl: process.env.QSTASH_URL || "https://qstash-us-east-1.upstash.io",
 });
 
 export function getAppBaseUrl(): string {
