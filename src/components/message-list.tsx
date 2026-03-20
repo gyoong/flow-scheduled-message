@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { ScheduledMessage } from "@/db/schema";
 import MessageCard from "./message-card";
 import AuthForm from "./auth-form";
@@ -84,12 +85,20 @@ export default function MessageList() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm text-gray-600">{email}</span>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-400 hover:text-gray-600 cursor-pointer"
-        >
-          로그아웃
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/new"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
+          >
+            + 새 예약
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            로그아웃
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-1 mb-4 border-b">
