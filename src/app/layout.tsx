@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Jua } from "next/font/google";
+import { Do_Hyeon, Geist_Mono, Black_Han_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const doHyeon = Do_Hyeon({
+  variable: "--font-do-hyeon",
   subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -12,10 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const jua = Jua({
-  variable: "--font-jua",
-  weight: "400",
+const blackHanSans = Black_Han_Sans({
+  variable: "--font-black-han-sans",
   subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${jua.variable} h-full antialiased`}
+      className={`${doHyeon.variable} ${geistMono.variable} ${blackHanSans.variable} h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col">
         {children}

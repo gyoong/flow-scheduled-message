@@ -81,7 +81,7 @@ export default function MessageList() {
     return (
       <>
         <h1 className="text-2xl font-title text-primary mb-6">Flow 메시지 예약</h1>
-        <AuthForm onSuccess={checkSession} />
+        <AuthForm />
       </>
     );
   }
@@ -89,7 +89,7 @@ export default function MessageList() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-title text-primary">Flow 메시지 예약</h1>
+        <h1 className="text-2xl font-title text-primary">Flow</h1>
         <Link
           href="/new"
           className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-hover"
