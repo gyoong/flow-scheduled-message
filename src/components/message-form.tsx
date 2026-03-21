@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ChatRoom } from "@/lib/types";
 
 export default function MessageForm() {
   const router = useRouter();
+  const [rooms, setRooms] = useState<ChatRoom[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(true);
   const [targetId, setTargetId] = useState("");
   const [content, setContent] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
-  const [roomName, setRoomName] = useState("");
-  const [fetchingRoom, setFetchingRoom] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,27 +19,15 @@ export default function MessageForm() {
     const today = new Date();
     setScheduledDate(today.toISOString().slice(0, 10));
     setScheduledTime(`${String(today.getHours()).padStart(2, "0")}:${String(today.getMinutes()).padStart(2, "0")}`);
-  }, []);
 
-  const handleFetchRoom = async () => {
-    if (!targetId || roomName) return;
-    setFetchingRoom(true);
-    setRoomName("");
-    setError("");
-    try {
-      const res = await fetch(`/api/chats?roomId=${targetId}`);
-      const data = await res.json();
-      if (res.ok) {
-        setRoomName(data.title);
-      } else {
-        setError(data.error || "채팅방을 찾을 수 없습니다");
-      }
-    } catch {
-      setError("채팅방 조회 중 오류가 발생했습니다");
-    } finally {
-      setFetchingRoom(false);
-    }
-  };
+    fetch("/api/chats")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.rooms) setRooms(data.rooms);
+      })
+      .catch(() => setError("채팅방 목록을 불러올 수 없습니다"))
+      .finally(() => setLoadingRooms(false));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +39,8 @@ export default function MessageForm() {
       return;
     }
 
+    const room = rooms.find((r) => r.roomId === targetId);
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/messages", {
@@ -57,7 +48,7 @@ export default function MessageForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           targetId,
-          targetName: roomName || targetId,
+          targetName: room?.title || targetId,
           content,
           scheduledAt: scheduledAt.toISOString(),
         }),
@@ -87,32 +78,29 @@ export default function MessageForm() {
 
       <div>
         <label className="block text-base font-medium text-gray-700 mb-1">
-          채팅방 번호
+          채팅방
         </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
+        <div className="relative">
+          <select
             value={targetId}
-            onChange={(e) => { setTargetId(e.target.value); setRoomName(""); }}
-            placeholder="채팅방 번호 입력"
-            className="flex-1 border rounded-lg px-4 py-3 text-base"
+            onChange={(e) => setTargetId(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 text-base bg-white appearance-none"
             required
-          />
-          <button
-            type="button"
-            onClick={handleFetchRoom}
-            disabled={!targetId || fetchingRoom}
-            className="bg-primary text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary-hover disabled:opacity-50 cursor-pointer whitespace-nowrap"
+            disabled={loadingRooms}
           >
-            {fetchingRoom ? "조회 중..." : "가져오기"}
-          </button>
+            <option value="">
+              {loadingRooms ? "채팅방 목록 불러오는 중..." : "채팅방을 선택하세요"}
+            </option>
+            {rooms.map((room) => (
+              <option key={room.roomId} value={room.roomId}>
+                {room.title}
+              </option>
+            ))}
+          </select>
+          <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
-        {roomName && (
-          <p className="mt-1 text-sm font-medium">이름 : <span className="text-primary">{roomName}</span></p>
-        )}
-        <p className="mt-1 text-xs text-gray-400">
-          채팅방 더보기 &gt; 채팅방 설정 &gt; 채팅방 번호 복사
-        </p>
       </div>
 
       <div>
@@ -124,12 +112,12 @@ export default function MessageForm() {
           onChange={(e) => setContent(e.target.value)}
           placeholder="보낼 메시지를 입력하세요"
           rows={4}
-          className="w-full border rounded-lg px-4 py-3 text-base resize-y"
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base resize-y"
           required
         />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
           <label className="block text-base font-medium text-gray-700 mb-1">
             날짜
@@ -138,7 +126,7 @@ export default function MessageForm() {
             type="date"
             value={scheduledDate}
             onChange={(e) => setScheduledDate(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 text-base"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
             required
           />
         </div>
@@ -150,7 +138,7 @@ export default function MessageForm() {
             type="time"
             value={scheduledTime}
             onChange={(e) => setScheduledTime(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 text-base"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
             required
           />
         </div>
@@ -159,7 +147,7 @@ export default function MessageForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-hover disabled:opacity-50 cursor-pointer"
+        className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {submitting ? "등록 중..." : "예약 등록"}
       </button>

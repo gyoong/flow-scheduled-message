@@ -13,6 +13,12 @@ export interface ScheduledMessage {
   updatedAt: string;
 }
 
+export interface ChatRoom {
+  roomId: string;
+  title: string;
+  type: string;
+}
+
 export type MessageStatus = "pending" | "sent" | "failed";
 
 export const STATUS_LABELS: Record<MessageStatus, string> = {
