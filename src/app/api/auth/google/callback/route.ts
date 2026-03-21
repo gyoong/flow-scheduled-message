@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { exchangeGoogleCode, createSession, getBaseUrl } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const base = getBaseUrl();
   const code = request.nextUrl.searchParams.get("code");
