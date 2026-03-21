@@ -25,6 +25,11 @@ export async function getChatRoom(roomId: string) {
   return flowFetch(`/v1/chats/${roomId}`);
 }
 
+// 참여중인 채팅방 목록 조회
+export async function getChatRoomsByParticipant(participantId: string) {
+  return flowFetch(`/v1/chats/participants/${participantId}`);
+}
+
 // 채팅방에 메시지 전송
 export async function sendChatMessage(
   roomId: string,

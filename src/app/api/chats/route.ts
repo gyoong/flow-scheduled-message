@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getChatRoom } from "@/lib/flow-api";
+import { getChatRoom, getChatRoomsByParticipant } from "@/lib/flow-api";
 import { getSession } from "@/lib/auth";
+import { ChatRoom } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
   const session = await getSession();
@@ -9,8 +10,19 @@ export async function GET(request: NextRequest) {
   }
 
   const roomId = request.nextUrl.searchParams.get("roomId");
+
   if (!roomId) {
-    return NextResponse.json({ error: "roomId가 필요합니다" }, { status: 400 });
+    try {
+      const data = await getChatRoomsByParticipant(session.email);
+      const rooms: ChatRoom[] = data.projects.chatRooms.map((room: ChatRoom) => ({
+        roomId: room.roomId,
+        title: room.title || "(이름 없는 채팅방)",
+        type: room.type,
+      }));
+      return NextResponse.json({ rooms });
+    } catch {
+      return NextResponse.json({ error: "채팅방 목록을 불러올 수 없습니다" }, { status: 500 });
+    }
   }
 
   try {
