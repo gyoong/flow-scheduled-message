@@ -3,7 +3,6 @@ import { pgTable, serial, varchar, text, timestamp, uniqueIndex } from "drizzle-
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull(),
-  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 }, (table) => [
   uniqueIndex("users_email_idx").on(table.email),

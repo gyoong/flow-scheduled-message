@@ -10,15 +10,15 @@
   --color-foreground: var(--foreground);
   --color-primary: #6449fc;
   --color-primary-hover: #5338e0;
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-do-hyeon);
   --font-mono: var(--font-geist-mono);
-  --font-title: var(--font-jua), sans-serif;
+  --font-title: var(--font-black-han-sans), sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-jua), Arial, Helvetica, sans-serif;
+  font-family: var(--font-do-hyeon), Arial, Helvetica, sans-serif;
 }
 
 input, textarea {

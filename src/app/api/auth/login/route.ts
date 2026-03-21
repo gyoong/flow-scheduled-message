@@ -1,39 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { verifyPassword, createSession } from "@/lib/auth";
+// Google OAuth로 전환되어 더 이상 사용하지 않습니다.
+// /api/auth/google 을 사용하세요.
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-  const { email, password } = await request.json();
-
-  if (!email || !password) {
-    return NextResponse.json(
-      { error: "이메일과 비밀번호를 입력해주세요" },
-      { status: 400 }
-    );
-  }
-
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email));
-
-  if (!user) {
-    return NextResponse.json(
-      { error: "이메일 또는 비밀번호가 올바르지 않습니다" },
-      { status: 401 }
-    );
-  }
-
-  const valid = await verifyPassword(password, user.passwordHash);
-  if (!valid) {
-    return NextResponse.json(
-      { error: "이메일 또는 비밀번호가 올바르지 않습니다" },
-      { status: 401 }
-    );
-  }
-
-  await createSession(email);
-  return NextResponse.json({ email });
+export async function POST() {
+  return NextResponse.json(
+    { error: "이 엔드포인트는 더 이상 사용되지 않습니다. Google 로그인을 사용해주세요." },
+    { status: 410 }
+  );
 }
